@@ -44,7 +44,21 @@ impl Orderbook{
     }
 
 
-
+    pub fn delete_order(&mut self, order: DeleteOrderInput){
+        //find and remove from bids
+        if let Some(price) = self.bids.iter().find_map( |(price,orders)| {
+            if orders.iter().any(|o| o.order_id == order.order_id){
+                Some(price.clone())
+            }
+            else{
+                None
+            }
+        }) {
+            if let Some(orders) = self.bids.get_mut(&price){
+                orders.retain(|o| o.order_id != order.order_id);
+            }
+        }
+    }
 
     //convert this to a readable struct 
     pub fn get_depth(&self)-> Depth{
