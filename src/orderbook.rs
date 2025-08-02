@@ -9,6 +9,16 @@ pub struct Orderbook{
     pub order_id_index : u32
 }
 
+impl Default for Orderbook {
+    fn default() -> Self {
+        Self {
+            bids: HashMap::new(),
+            asks: HashMap::new(),
+            order_id_index: 0
+        }
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Depth {
     pub price: f64,
