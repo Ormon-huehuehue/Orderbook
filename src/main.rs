@@ -4,8 +4,9 @@ use std::sync::{Arc, Mutex};
 
 
 mod handlers;
-pub mod inputs;
 pub mod outputs;
+pub mod orderbook;
+pub mod inputs;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

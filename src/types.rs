@@ -3,9 +3,9 @@ use serde::{Deserialize, Serialize};
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CreateOrderInput{
     pub price : f64, 
-    pub quantity : u64, 
+    pub quantity : f64, 
     pub user_id : String, 
-    pub side : Side,
+    pub side : Side
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
