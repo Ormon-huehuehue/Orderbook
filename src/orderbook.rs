@@ -1,5 +1,5 @@
 use std::collections::{BTreeMap, HashMap};
-use crate::{inputs::{CreateOrderInput, DeleteOrderInput, Side}, outputs::{CreateOrderResponse, DeleteOrderResponse, Depth}};
+use crate::{inputs::{CreateOrderInput, DeleteOrderInput, Side}, outputs::{CreateOrderResponse, DeleteOrderResponse}};
 use serde::{Serialize, Deserialize};
 
 
@@ -7,6 +7,18 @@ pub struct Orderbook{
     pub bids : HashMap<String, Vec<OpenOrder>>,
     pub asks : HashMap<String, Vec<OpenOrder>>,
     pub order_id_index : u32
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Depth {
+    pub price: f64,
+    pub quantity: u64,
+}
+
+
+pub struct DepthResponse {
+    pub bids: Vec<Depth>,
+    pub asks: Vec<Depth>,
 }
 
 #[derive(Clone)]
@@ -61,7 +73,28 @@ impl Orderbook{
     }
 
     //convert this to a readable struct 
-    pub fn get_depth(&self)-> Depth{
-        Depth { bids: (), asks: () }
+    pub fn get_depth(&self)-> DepthResponse{
+        let mut bids = Vec::new();
+        let mut asks = Vec::new();
+
+        for(price, orders) in self.bids.iter() {
+            let depth = Depth{
+                price : price.parse().unwrap(),
+                quantity : orders.iter().map(|o| o.quantity).sum()
+            };
+
+            bids.push(depth);
+        }
+       
+        for(price, orders) in self.asks.iter() {
+            let depth = Depth{
+                price : price.parse().unwrap(),
+                quantity : orders.iter().map(|o| o.quantity).sum()
+            };
+
+            bids.push(depth);
+        }
+
+        DepthResponse {bids, asks}
     }
 }

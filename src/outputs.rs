@@ -13,8 +13,3 @@ pub struct DeleteOrderResponse {
     pub average_price: u32
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct Depth {
-    pub bids: Vec<[u32; 2]>,
-    pub asks: Vec<[u32; 2]>,
-}
