@@ -15,7 +15,7 @@ pub struct Depth {
     pub quantity: u64,
 }
 
-
+#[derive(Serialize, Deserialize)]
 pub struct DepthResponse {
     pub bids: Vec<Depth>,
     pub asks: Vec<Depth>,
@@ -70,6 +70,22 @@ impl Orderbook{
                 orders.retain(|o| o.order_id != order.order_id);
             }
         }
+
+        //find and remove from asks
+        if let Some(price) = self.asks.iter().find_map( |(price,orders)| {
+            if orders.iter().any(|o| o.order_id == order.order_id){
+                Some(price.clone())
+            }
+            else{
+                None
+            }
+        }) {
+            if let Some(orders) = self.asks.get_mut(&price){
+                orders.retain(|o| o.order_id != order.order_id);
+            }
+        }
+
+        
     }
 
     //convert this to a readable struct 
@@ -92,7 +108,7 @@ impl Orderbook{
                 quantity : orders.iter().map(|o| o.quantity).sum()
             };
 
-            bids.push(depth);
+            asks.push(depth);
         }
 
         DepthResponse {bids, asks}
